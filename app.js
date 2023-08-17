@@ -5,7 +5,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const recipesController = require("./controllers/recipesController.js");
+const recipesController = require("./controllers/recipesController");
 app.use("/recipes", recipesController);
 
 // ROUTES

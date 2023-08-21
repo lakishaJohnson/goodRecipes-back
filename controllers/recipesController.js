@@ -8,15 +8,16 @@ const {
   deleteRecipe,
   updateRecipe,
 } = require("../queries/recipes");
+
 // const {
 //     checkName, checkBoolean, checkArtist
 // } = require("../validations/checkSongs")
 
 // INDEX
 recipes.get("/", async (req, res) => {
-  const { order, is_favorite } = req.query;
+  const { order, is_good, category } = req.query;
   try {
-    const getRecipes = await getAllRecipes(order, is_favorite);
+    const getRecipes = await getAllRecipes(order, is_good, category);
     if (getRecipes.length > 0) {
       res.status(200).json(getRecipes);
     } else {
@@ -57,7 +58,7 @@ recipes.delete("/:id", async (req, res) => {
   if (deletedRecipe) {
     res.status(200).json(deletedRecipe);
   } else {
-    res.status(404).json("Recipe not found");
+    res.status(404).json({ error: "Recipe not found" });
   }
 });
 

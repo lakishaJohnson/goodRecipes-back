@@ -14,5 +14,8 @@ CREATE TABLE recipes (
     directions VARCHAR NOT NULL,
     nutritionFacts VARCHAR DEFAULT NULL,
     tips VARCHAR DEFAULT NULL,
-    is_good BOOLEAN
-)
+    is_good BOOLEAN,
+    is_quick BOOLEAN,
+    image_url TEXT DEFAULT NULL
+);
+

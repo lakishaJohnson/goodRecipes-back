@@ -9,7 +9,14 @@ const {
   updateRecipe,
   // updateIsGood,
 } = require("../queries/recipes");
-const { validateCategory, validateDirections, validateDish, validateIngredients, validateIsGood, validateIsQuick } = require("../validations/checkRecipes") 
+const {
+  validateCategory,
+  validateDirections,
+  validateDish,
+  validateIngredients,
+  validateIsGood,
+  validateIsQuick,
+} = require("../validations/checkRecipes");
 
 // INDEX
 recipes.get("/", async (req, res) => {
@@ -40,14 +47,23 @@ recipes.get("/:id", async (req, res) => {
 
 // CREATE
 // recipes.post("/", async (req, res) => {
-recipes.post("/", validateCategory, validateDirections, validateDish, validateIngredients, validateIsGood, validateIsQuick, async (req, res) => {
-  try {
-    const recipe = await createRecipe(req.body);
-    res.json(recipe);
-  } catch (error) {
-    res.status(400).json({ error: error });
+recipes.post(
+  "/",
+  validateCategory,
+  validateDirections,
+  validateDish,
+  validateIngredients,
+  validateIsGood,
+  validateIsQuick,
+  async (req, res) => {
+    try {
+      const recipe = await createRecipe(req.body);
+      res.json(recipe);
+    } catch (error) {
+      res.status(400).json({ error: error });
+    }
   }
-});
+);
 
 // DELETE
 recipes.delete("/:id", async (req, res) => {
@@ -61,14 +77,30 @@ recipes.delete("/:id", async (req, res) => {
 });
 
 // UPDATE
-recipes.put("/:id", async (req, res) => {
-  const { id } = req.params;
-  const updatedRecipeData = req.body; 
-  const updatedRecipe = await updateRecipe(id, updatedRecipeData);
-  res.status(200).json(updatedRecipe);
-});
+// recipes.put("/:id", async (req, res) => {
+recipes.put(
+  "/:id",
+  validateCategory,
+  validateDirections,
+  validateDish,
+  validateIngredients,
+  validateIsGood,
+  validateIsQuick,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updatedRecipeData = req.body;
+      const updatedRecipe = await updateRecipe(id, updatedRecipeData);
+      res.status(200).json(updatedRecipe);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "An error occurred while updating the recipe." });
+    }
+  }
+);
 
 // recipes.put("/:id", updateIsGood);
-
 
 module.exports = recipes;

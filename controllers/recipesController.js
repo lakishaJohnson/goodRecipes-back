@@ -7,17 +7,15 @@ const {
   createRecipe,
   deleteRecipe,
   updateRecipe,
+  // updateIsGood,
 } = require("../queries/recipes");
-
-// const {
-//     checkName, checkBoolean, checkArtist
-// } = require("../validations/checkSongs")
+const { validateCategory, validateDirections, validateDish, validateIngredients, validateIsGood, validateIsQuick } = require("../validations/checkRecipes") 
 
 // INDEX
 recipes.get("/", async (req, res) => {
-  const { order, is_good, category } = req.query;
+  const { order, is_good, category, is_quick } = req.query;
   try {
-    const getRecipes = await getAllRecipes(order, is_good, category);
+    const getRecipes = await getAllRecipes(order, is_good, category, is_quick);
     if (getRecipes.length > 0) {
       res.status(200).json(getRecipes);
     } else {
@@ -41,8 +39,8 @@ recipes.get("/:id", async (req, res) => {
 });
 
 // CREATE
-recipes.post("/", async (req, res) => {
-// recipes.post("/", checkName, checkBoolean, checkArtist, async (req, res) => {
+// recipes.post("/", async (req, res) => {
+recipes.post("/", validateCategory, validateDirections, validateDish, validateIngredients, validateIsGood, validateIsQuick, async (req, res) => {
   try {
     const recipe = await createRecipe(req.body);
     res.json(recipe);
@@ -65,8 +63,12 @@ recipes.delete("/:id", async (req, res) => {
 // UPDATE
 recipes.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const updatedRecipe = await updateRecipe(id, req.body);
+  const updatedRecipeData = req.body; 
+  const updatedRecipe = await updateRecipe(id, updatedRecipeData);
   res.status(200).json(updatedRecipe);
 });
+
+// recipes.put("/:id", updateIsGood);
+
 
 module.exports = recipes;

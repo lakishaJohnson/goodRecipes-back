@@ -1,7 +1,7 @@
 const db = require("../db/dbConfig.js");
 
 const getAllRecipes = async (order, is_good, category) => {
-  console.log("Received category:", category);
+  // console.log("Received category:", category);
 
   let query = "SELECT * FROM recipes";
   const validCategories = ["Breakfast", "Lunch", "Dinner"];
@@ -26,7 +26,7 @@ const getAllRecipes = async (order, is_good, category) => {
     query += " ORDER BY dish DESC";
   }
 
-  console.log("Final query:", query);
+  // console.log("Final query:", query);
 
   try {
     const allRecipes = await db.any(query);
@@ -48,19 +48,19 @@ const getRecipe = async (id) => {
 const createRecipe = async (recipe) => {
   try {
     const newRecipe = await db.one(
-      "INSERT INTO recipes (dish, category, ingredients, prepTime, cookTime, totalTime, directions, nutritionFacts, tips, is_good, is_quick, image_url) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *",
+      "INSERT INTO recipes (dish, category, ingredients, prep_time, cook_time, total_time, directions, nutrition_facts, tips, is_good, is_quick, image_url) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *",
       [
         recipe.dish,
         recipe.category,
         recipe.ingredients,
-        recipe.prepTime,
-        recipe.cookTime,
-        recipe.totalTime,
+        recipe.prep_time,
+        recipe.cook_time,
+        recipe.total_time,
         recipe.directions,
-        recipe.nutritionFacts,
+        recipe.nutrition_facts,
         recipe.tips,
         recipe.is_good,
-        recipe.is_good_quick,
+        recipe.is_quick,
         recipe.image_url,
       ]
     );
@@ -85,16 +85,16 @@ const deleteRecipe = async (id) => {
 const updateRecipe = async (id, recipe) => {
   try {
     const updatedRecipe = await db.one(
-      "UPDATE recipes SET dish=$1, category=$2, ingredients=$3, prepTime=$4, cookTime=$5, totalTime=$6, directions=$7, nutritionFacts=$8, tips=$9, is_good=$10, is_quick=$11, image_url=$12 where id=$13 RETURNING *",
+      "UPDATE recipes SET dish=$1, category=$2, ingredients=$3, prep_time=$4, cook_time=$5, total_time=$6, directions=$7, nutrition_facts=$8, tips=$9, is_good=$10, is_quick=$11, image_url=$12 where id=$13 RETURNING *",
       [
         recipe.dish,
         recipe.category,
         recipe.ingredients,
-        recipe.prepTime,
-        recipe.cookTime,
-        recipe.totalTime,
+        recipe.prep_time,
+        recipe.cook_time,
+        recipe.total_time,
         recipe.directions,
-        recipe.nutritionFacts,
+        recipe.nutrition_facts,
         recipe.tips,
         recipe.is_good,
         recipe.is_quick,
@@ -108,20 +108,22 @@ const updateRecipe = async (id, recipe) => {
   }
 };
 
-function getQuickRecipes() {
-  return db.any("SELECT * FROM recipes WHERE is_quick = true");
-}
-
 // const updateIsGood = async (req, res) => {
-//   const recipeId = req.params.id;
-//   const isGood = req.body.is_good;
+//   const { id } = req.params;
+//   const { is_good } = req.body;
 
 //   try {
-//     await db.none("UPDATE recipes SET is_good = $1 WHERE id = $2", [isGood, recipeId]);
-//     res.status(200).json({ message: "is_good updated successfully" });
+//     const updatedRecipe = await db.one(
+//       "UPDATE recipes SET is_good=$1 WHERE id=$2 RETURNING *",
+//       [is_good, id]
+//     );
+
+//     res.status(200).json(updatedRecipe);
 //   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Unable to update is_good status" });
+//     console.error("Error updating is_good:", error);
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while updating is_good." });
 //   }
 // };
 
@@ -131,6 +133,5 @@ module.exports = {
   createRecipe,
   deleteRecipe,
   updateRecipe,
-  getQuickRecipes,
-  // updateIsGood,
+  // updateIsGood
 };
